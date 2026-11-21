@@ -1,0 +1,62 @@
+<div class="card shadow-lg border-0 rounded-lg">
+  <div class="card-header bg-secondary text-white text-center p-3 border-0">
+    <h3 class="mb-0 fw-bold"><i class="bi bi-clipboard-check-fill me-1"></i> Mi Historial de Feedback</h3>
+    <p class="mb-0 text-white-50 small">Consulta las calificaciones y comentarios que has enviado sobre el servicio</p>
+  </div>
+
+  <div class="card-body p-4 bg-white">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="text-muted mb-0 fw-semibold">Mis Respuestas Enviadas</h5>
+      <a class="btn btn-success fw-bold shadow-sm btn-sm px-3" routerLink="/mis-encuestas/nueva">
+        <i class="bi bi-plus-circle-fill me-1"></i> Registrar Nueva Calificación
+      </a>
+    </div>
+
+    @if (cargando()) {
+      <div class="text-center p-4"><div class="spinner-border"></div></div>
+    } @else {
+      <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle mb-0 bg-white">
+          <thead class="table-dark">
+            <tr>
+              <th class="ps-3" style="width: 180px;">Fecha de Registro</th>
+              <th class="text-center" style="width: 180px;">Calificación</th>
+              <th>Comentario Enviado</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (e of encuestas(); track e.id) {
+              <tr>
+                <td class="ps-3 text-muted small font-monospace">{{ e.fechaRegistro | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td class="text-center">
+                  <div class="d-inline-block text-nowrap text-warning">
+                    @for (i of estrellas; track i) {
+                      @if (i <= e.calificacion) {
+                        <i class="bi bi-star-fill small"></i>
+                      } @else {
+                        <i class="bi bi-star text-muted small"></i>
+                      }
+                    }
+                  </div>
+                  <span class="small text-muted ms-1 font-monospace">({{ e.calificacion }}/5)</span>
+                </td>
+                <td>
+                  <div class="text-dark small text-wrap" style="max-width: 450px;">
+                    {{ e.comentario || 'Sin comentarios adicionales.' }}
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="3" class="text-center text-muted py-5">
+                  <i class="bi bi-emoji-neutral fs-2 d-block mb-2 text-secondary"></i>
+                  Aún no has registrado ninguna calificación o comentario sobre el servicio.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

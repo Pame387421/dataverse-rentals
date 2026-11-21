@@ -1,0 +1,105 @@
+<div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+  <div>
+    <h2 class="text-dark fw-bold mb-0">
+      <i class="bi bi-buildings text-success me-2"></i> Gestión de Complejos e Edificios
+    </h2>
+    <p class="text-muted small mb-0">Monitoreo estructural, departamentos asignados y ubicaciones del portafolio inmobiliario</p>
+  </div>
+  <a class="btn btn-success fw-bold shadow-sm px-4" routerLink="/edificios/nuevo">
+    <i class="bi bi-plus-circle-fill me-1"></i> Registrar Edificio
+  </a>
+</div>
+
+<div class="row mb-4">
+  <div class="col-md-4 mb-2">
+    <div class="card border-0 shadow-sm bg-success bg-opacity-10 text-success p-3 rounded-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <span class="text-uppercase small fw-bold text-muted d-block">Complejos Totales</span>
+          <h3 class="mb-0 fw-bold text-dark">{{ totalComplejos() }}</h3>
+        </div>
+        <i class="bi bi-building-fill fs-2"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-2">
+    <div class="card border-0 shadow-sm bg-primary bg-opacity-10 text-primary p-3 rounded-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <span class="text-uppercase small fw-bold text-muted d-block">Departamentos Operativos</span>
+          <h3 class="mb-0 fw-bold text-dark">{{ totalDepartamentos() }}</h3>
+        </div>
+        <i class="bi bi-door-open-fill fs-2"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-2">
+    <div class="card border-0 shadow-sm bg-warning bg-opacity-10 text-warning p-3 rounded-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <span class="text-uppercase small fw-bold text-muted d-block">Capacidad Promedio</span>
+          <h3 class="mb-0 fw-bold text-dark">{{ promedioCapacidad() | number:'1.1-1' }} dptos/edif</h3>
+        </div>
+        <i class="bi bi-calculator-fill fs-2"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (cargando()) {
+  <div class="text-center p-5"><div class="spinner-border"></div></div>
+} @else {
+  <div class="card shadow-sm border-0 rounded-3">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light border-bottom">
+            <tr>
+              <th class="ps-4 py-3">Nombre del Edificio</th>
+              <th class="py-3">Dirección Registrada</th>
+              <th class="text-center py-3">Nivel / Pisos</th>
+              <th class="text-center py-3">Unidades (Dptos)</th>
+              <th class="text-end pe-4 py-3">Operaciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (e of edificios(); track e.id) {
+              <tr>
+                <td class="ps-4 fw-bold text-dark">
+                  <i class="bi bi-building text-secondary me-2"></i>{{ e.nombre }}
+                </td>
+                <td>
+                  <small class="text-muted"><i class="bi bi-geo-alt-fill text-danger me-1"></i>{{ e.direccion }}</small>
+                </td>
+                <td class="text-center">
+                  <span class="badge bg-light text-dark border px-3 py-1">
+                    {{ e.pisos }} {{ e.pisos === 1 ? 'Nivel' : 'Niveles' }}
+                  </span>
+                </td>
+                <td class="text-center">
+                  <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-bold">
+                    <i class="bi bi-houses-fill me-1"></i>{{ e.cantidadDepartamentos ?? 0 }}
+                  </span>
+                </td>
+                <td class="text-end pe-4">
+                  <div class="btn-group shadow-sm rounded">
+                    <a class="btn btn-white btn-sm border-end" title="Editar" [routerLink]="['/edificios/editar', e.id]">✏️</a>
+                    <a class="btn btn-white btn-sm border-end" title="Detalles" [routerLink]="['/edificios/detalle', e.id]">🔍</a>
+                    <button class="btn btn-white btn-sm" title="Eliminar" (click)="eliminar(e)">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="text-center text-muted py-5">
+                  <i class="bi bi-building-exclamation fs-2 d-block mb-2 text-secondary"></i>
+                  No se registran complejos habitacionales en el sistema actualmente.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+}

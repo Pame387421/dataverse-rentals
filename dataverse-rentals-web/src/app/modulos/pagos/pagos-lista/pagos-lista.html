@@ -1,0 +1,134 @@
+<div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+  <div>
+    <h2 class="text-dark fw-bold mb-0">
+      <i class="bi bi-cash-stack text-success me-2"></i> Auditoría de Pagos y Recaudación
+    </h2>
+    <p class="text-muted small mb-0">Control operativo de transacciones monetarias, validación de estados de cuenta y conciliación de saldos</p>
+  </div>
+  <a class="btn btn-success fw-bold shadow-sm px-4" routerLink="/pagos/nuevo">
+    <i class="bi bi-plus-circle-fill me-1"></i> Registrar Nuevo Pago
+  </a>
+</div>
+
+<div class="row mb-4">
+  <div class="col-md-4 mb-2">
+    <div class="card border-0 shadow-sm bg-success bg-opacity-10 text-success p-3 rounded-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <span class="text-uppercase small fw-bold text-muted d-block">Total Abonado (Caja)</span>
+          <h3 class="mb-0 fw-bold text-dark">S/ {{ totalAbonado() | number:'1.2-2' }}</h3>
+        </div>
+        <i class="bi bi-wallet2 fs-2 text-success"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-2">
+    <div class="card border-0 shadow-sm bg-danger bg-opacity-10 text-danger p-3 rounded-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <span class="text-uppercase small fw-bold text-muted d-block">Saldos por Cobrar (Deuda)</span>
+          <h3 class="mb-0 fw-bold text-dark">S/ {{ totalPorCobrar() | number:'1.2-2' }}</h3>
+        </div>
+        <i class="bi bi-exclamation-circle-fill fs-2 text-danger"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-2">
+    <div class="card border-0 shadow-sm bg-primary bg-opacity-10 text-primary p-3 rounded-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <span class="text-uppercase small fw-bold text-muted d-block">Transacciones Conciliadas</span>
+          <h3 class="mb-0 fw-bold text-dark">
+            {{ conciliadas() }} <span class="fs-6 fw-normal text-muted">de {{ totalTransacciones() }}</span>
+          </h3>
+        </div>
+        <i class="bi bi-file-earmark-check-fill fs-2 text-primary"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (cargando()) {
+  <div class="text-center p-5"><div class="spinner-border"></div></div>
+} @else {
+  <div class="card shadow-sm border-0 rounded-3">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 bg-white">
+          <thead class="table-light border-bottom">
+            <tr>
+              <th class="ps-4 py-3">Boleta / Inquilino</th>
+              <th class="py-3">Unidad / Dpto</th>
+              <th class="py-3">Fecha de Operación</th>
+              <th class="text-end py-3">Total Recibo</th>
+              <th class="text-end py-3">Monto Abonado</th>
+              <th class="text-end py-3">Saldo Restante</th>
+              <th class="text-center py-3">Comprobante Físico</th>
+              <th class="text-end pe-4 py-3">Operaciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (p of pagos(); track p.id) {
+              <tr>
+                <td class="ps-4">
+                  <div class="fw-bold text-dark"><i class="bi bi-person-fill me-1 text-muted"></i> {{ p.inquilino }}</div>
+                  <small class="text-muted font-monospace" style="font-size: 0.75rem;">Boleta #{{ p.boletaId }}</small>
+                </td>
+                <td>
+                  <span class="badge bg-light text-dark border">
+                    <i class="bi bi-building me-1 text-secondary"></i> {{ p.nombreDepartamento }}
+                  </span>
+                </td>
+                <td class="small text-muted"><i class="bi bi-calendar-event me-1"></i> {{ p.fechaPago | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td class="text-end text-muted font-monospace small">S/ {{ p.montoTotal | number:'1.2-2' }}</td>
+                <td class="text-end fw-bold text-success font-monospace">S/ {{ p.montoAbonado | number:'1.2-2' }}</td>
+                <td class="text-end fw-bold font-monospace" [class]="p.saldoPendiente > 0 ? 'text-danger' : 'text-muted'">
+                  S/ {{ p.saldoPendiente | number:'1.2-2' }}
+                </td>
+                <td class="text-center">
+                   @if (p.tieneVoucherPdf) {
+                    <button type="button" class="btn btn-sm btn-outline-danger px-3 py-1 fw-bold" style="font-size: 0.8rem;" [appVerVoucher]="p.id!">
+                      <i class="bi bi-file-pdf"></i> PDF
+                    </button>
+                  } @else if (p.urlVoucher) {
+                    <a [href]="p.urlVoucher" target="_blank" rel="noopener" class="btn btn-sm btn-outline-info px-3 py-1 fw-bold" style="font-size: 0.8rem;">
+                      <i class="bi bi-link-45deg"></i> Link
+                    </a>
+                  } @else {
+                    <span class="badge bg-light text-muted border px-2 py-1 small">No adjunto</span>
+                  }
+                </td>
+                <td class="text-end pe-4">
+                  <div class="btn-group shadow-sm rounded border bg-white">
+                    <a class="btn btn-white btn-sm border-end py-2 px-3" title="Auditar desglose de conceptos" [routerLink]="['/pagos/detalle', p.id]">
+                      <span class="text-info fw-bold"><i class="bi bi-search"></i></span>
+                    </a>
+                    <button class="btn btn-white btn-sm py-2 px-3" title="Anular transacción y reabrir deuda" (click)="anular(p)">
+                      <span class="text-danger fw-bold"><i class="bi bi-trash-fill"></i></span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="8" class="text-center text-muted py-5">
+                  <i class="bi bi-credit-card-fill fs-2 d-block mb-2 text-secondary"></i>
+                  No se registran transacciones de pago ni conciliaciones en el sistema.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card-footer bg-light border-top-0 d-flex justify-content-between align-items-center px-4 py-3">
+      <span class="text-muted small fw-bold">
+        <i class="bi bi-info-circle me-1"></i> Auditoría activa: Mostrando <strong>{{ totalTransacciones() }}</strong> registros conciliados
+      </span>
+      <a class="btn btn-success btn-sm fw-bold px-4 shadow-sm" routerLink="/pagos/nuevo">
+        <i class="bi bi-cloud-arrow-up-fill me-1"></i> Registrar Nuevo Pago
+      </a>
+    </div>
+  </div>
+}

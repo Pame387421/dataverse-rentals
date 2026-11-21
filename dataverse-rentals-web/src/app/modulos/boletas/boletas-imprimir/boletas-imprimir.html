@@ -1,0 +1,88 @@
+@if (boleta(); as b) {
+  <div class="text-center mb-4 d-print-none">
+    <button class="btn btn-success btn-lg me-2 shadow-sm fw-bold" (click)="imprimir()">
+      <i class="bi bi-printer"></i> Imprimir Recibo / Guardar como PDF
+    </button>
+   <a class="btn btn-secondary btn-lg shadow-sm fw-bold" [routerLink]="auth.esAdministrador() ? '/boletas' : '/mis-boletas'">
+      <i class="bi bi-arrow-left-circle"></i> Volver
+    </a>
+  </div>
+
+  <div class="shadow rounded bg-white" style="max-width: 800px; margin: auto; padding: 30px; border: 1px solid #eee;">
+
+    <div class="row align-items-center mb-4 pb-3 border-bottom">
+      <div class="col-sm-6">
+        <h2 class="text-success fw-bold mb-1"><i class="bi bi-building-fill"></i> Dataverse Rentals</h2>
+        <p class="text-muted small mb-0">Gestión Inmobiliaria y Control de Arriendos Cíclicos</p>
+        <p class="text-muted small mb-0">Lima, Perú</p>
+      </div>
+      <div class="col-sm-6 text-sm-end mt-3 mt-sm-0">
+        <div class="p-3 rounded border border-success border-opacity-25 d-inline-block" style="background-color: #f4fbf7;">
+          <h5 class="text-success fw-bold mb-1">RECIBO DE COBRO</h5>
+          <span class="fw-bold text-secondary">Boleta #{{ b.id }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-4 bg-light p-3 rounded mx-1">
+      <div class="col-sm-6 mb-3 mb-sm-0">
+        <h6 class="text-success fw-bold mb-2">Datos del Inquilino</h6>
+        <p class="mb-0 fw-bold text-dark">{{ b.inquilino }}</p>
+        <p class="mb-0 text-muted small">ID Contrato Vinculado: #{{ b.contratoId }}</p>
+        <p class="mb-0 text-muted small">Periodo Comercial: <span class="text-capitalize fw-bold">{{ etiquetaPeriodo(b.fechaEmision) }}</span></p>
+      </div>
+      <div class="col-sm-6 text-sm-end">
+        <h6 class="text-success fw-bold mb-2">Detalles de la Unidad</h6>
+        <p class="mb-0 fw-bold text-dark">{{ b.edificioNombre }}</p>
+        <p class="mb-0 text-muted small">Piso {{ b.piso }} — Departamento {{ b.numeroDepartamento }}</p>
+        <p class="mb-0 text-muted small">Emisión: {{ b.fechaEmision | date:'dd/MM/yyyy' }}</p>
+        <p class="mb-0 text-danger small fw-bold">Vencimiento: {{ b.fechaVencimiento | date:'dd/MM/yyyy' }}</p>
+      </div>
+    </div>
+
+    
+
+    <h5 class="text-secondary mb-3"><i class="bi bi-list-check"></i> Conceptos Liquidados en el Periodo</h5>
+    <table class="table table-bordered mb-4 align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th class="ps-3">Descripción del Concepto / Servicio</th>
+          <th style="width: 200px;" class="text-end pe-3">Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (d of b.detalles; track d.concepto) {
+          <tr>
+            <td class="fw-medium ps-3 text-dark">{{ d.concepto }}</td>
+            <td class="text-end pe-3 font-monospace fw-bold text-secondary">S/ {{ d.monto | number:'1.2-2' }}</td>
+          </tr>
+        }
+        <tr class="table-success fw-bold fs-6">
+          <td class="text-dark ps-3 fw-bold">Monto Total a Regularizar</td>
+          <td class="text-end pe-3 text-success fs-5 fw-bold font-monospace">S/ {{ b.montoTotal | number:'1.2-2' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="row mt-5 pt-4 text-center">
+      <div class="col-6">
+        <div style="border-top: 1px solid #ccc; width: 80%; margin: auto;" class="pt-2 text-muted small font-monospace">
+          Firma / Sello Administración
+        </div>
+      </div>
+      <div class="col-6">
+        <div style="border-top: 1px solid #ccc; width: 80%; margin: auto;" class="pt-2 text-muted small font-monospace">
+          Firma Conforme Inquilino
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-5 text-muted small border-top pt-3">
+      <i class="bi bi-shield-check text-success"></i>
+      Este documento es un comprobante interno de pre-facturación emitido de manera automatizada por el portal de
+      <strong>Dataverse Rentals</strong>.
+    </div>
+  </div>
+} @else {
+  <div class="text-center p-5"><div class="spinner-border"></div></div>
+}

@@ -1,0 +1,95 @@
+@if (mantenimiento(); as m) {
+  <div class="card shadow-lg border-0 rounded-lg" style="max-width: 900px;">
+    <div class="card-header bg-info text-white text-center py-3">
+      <h3 class="mb-0 fw-bold"><i class="bi bi-eye-fill me-2"></i>Detalles del Mantenimiento</h3>
+    </div>
+    <div class="card-body p-4 bg-white">
+      <dl class="row mb-0 pb-3 border-bottom">
+        <dt class="col-sm-3 text-secondary small text-uppercase fw-bold">Descripción</dt>
+        <dd class="col-sm-9 text-dark fw-semibold">{{ m.descripcion }}</dd>
+
+        <dt class="col-sm-3 text-secondary small text-uppercase fw-bold mt-3">Categoría</dt>
+        <dd class="col-sm-9 mt-3">
+          <span class="badge bg-light text-dark border text-uppercase">{{ m.categoria }}</span>
+        </dd>
+
+        <dt class="col-sm-3 text-secondary small text-uppercase fw-bold mt-3">Estado</dt>
+        <dd class="col-sm-9 mt-3">
+          @switch (m.estado) {
+            @case ('PENDIENTE') {
+              <span class="badge bg-warning text-dark px-3 py-2 fw-bold"><i class="bi bi-clock me-1"></i>Pendiente</span>
+            }
+            @case ('EN_PROCESO') {
+              <span class="badge bg-info text-dark px-3 py-2 fw-bold"><i class="bi bi-gear-fill me-1"></i>En Proceso</span>
+            }
+            @default {
+              <span class="badge bg-success px-3 py-2 fw-bold"><i class="bi bi-check-circle-fill me-1"></i>Finalizado</span>
+            }
+          }
+        </dd>
+
+        <dt class="col-sm-3 text-secondary small text-uppercase fw-bold mt-3">Departamento</dt>
+        <dd class="col-sm-9 mt-3 text-muted">
+          <i class="bi bi-building text-secondary me-1"></i> {{ m.nombreDepartamento }}
+        </dd>
+
+        <dt class="col-sm-3 text-secondary small text-uppercase fw-bold mt-3">Proveedor</dt>
+        <dd class="col-sm-9 mt-3 text-dark">
+          <i class="bi bi-person-wrench text-muted me-1"></i> {{ m.nombreProveedor }}
+        </dd>
+
+        <dt class="col-sm-3 text-secondary small text-uppercase fw-bold mt-3">Ticket de Soporte</dt>
+        <dd class="col-sm-9 mt-3 text-dark">
+          @if (m.textoTicket) {
+            <i class="bi bi-ticket-detailed text-muted me-1"></i> {{ m.textoTicket }}
+          } @else {
+            <span class="text-muted small fst-italic">Mantenimiento directo (sin ticket)</span>
+          }
+        </dd>
+
+        <dt class="col-sm-3 text-secondary small text-uppercase fw-bold mt-3">Costo Materiales</dt>
+        <dd class="col-sm-9 mt-3 fw-bold text-dark font-monospace">S/ {{ m.costoMateriales | number:'1.2-2' }}</dd>
+
+        <dt class="col-sm-3 text-secondary small text-uppercase fw-bold mt-3">Costo Mano Obra</dt>
+        <dd class="col-sm-9 mt-3 fw-bold text-dark font-monospace">S/ {{ m.costoManoObra | number:'1.2-2' }}</dd>
+
+        <dt class="col-sm-3 text-secondary small text-uppercase fw-bold mt-3">Costo Total</dt>
+        <dd class="col-sm-9 mt-3 fw-bold text-success font-monospace fs-5">S/ {{ m.costoTotal | number:'1.2-2' }}</dd>
+
+        <dt class="col-sm-3 text-secondary small text-uppercase fw-bold mt-3">Fecha de Registro</dt>
+        <dd class="col-sm-9 mt-3 text-muted">
+          <i class="bi bi-calendar3 me-1"></i> {{ m.fechaRegistro | date:'dd/MM/yyyy' }}
+        </dd>
+
+        <dt class="col-sm-3 text-secondary small text-uppercase fw-bold mt-3">Fecha de Ejecución</dt>
+        <dd class="col-sm-9 mt-3 text-muted">
+          {{ m.fechaEjecucion ? (m.fechaEjecucion | date:'dd/MM/yyyy') : 'Sin programar' }}
+        </dd>
+
+        <dt class="col-sm-3 text-secondary small text-uppercase fw-bold mt-3">Fecha de Finalización</dt>
+        <dd class="col-sm-9 mt-3 text-muted">
+          {{ m.fechaFinalizacion ? (m.fechaFinalizacion | date:'dd/MM/yyyy') : 'Sin finalizar' }}
+        </dd>
+
+        <dt class="col-sm-3 text-secondary small text-uppercase fw-bold mt-3">Observaciones</dt>
+        <dd class="col-sm-9 mt-3 text-dark">{{ m.observaciones || 'Sin observaciones' }}</dd>
+      </dl>
+
+      <div class="d-flex justify-content-between mt-4">
+        <a class="btn btn-secondary fw-bold px-4 shadow-sm" routerLink="/mantenimientos">
+          <i class="bi bi-arrow-left-circle me-1"></i> Volver
+        </a>
+        <div>
+          <a class="btn btn-warning fw-bold px-4 shadow-sm text-dark me-2" [routerLink]="['/mantenimientos/editar', m.id]">
+            <i class="bi bi-pencil-square me-1"></i> Editar
+          </a>
+          <button class="btn btn-danger fw-bold px-4 shadow-sm" (click)="eliminar()">
+            <i class="bi bi-trash me-1"></i> Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+} @else {
+  <div class="text-center p-5"><div class="spinner-border"></div></div>
+}

@@ -1,0 +1,76 @@
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    @if (usuario(); as u) {
+      <div class="card shadow-lg border-0 rounded-lg">
+        <div class="card-header bg-primary text-white p-4">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <h3 class="mb-1 fw-bold">{{ u.nombre }}</h3>
+              <p class="mb-0 text-white-50"><i class="bi bi-tag-fill me-1"></i> Rol: {{ u.nombreRol || 'Inquilino' }}</p>
+            </div>
+            <span class="badge bg-light text-primary p-2 fs-6 fw-bold">Activo</span>
+          </div>
+        </div>
+
+        <div class="card-body p-4 bg-light">
+          <h5 class="text-muted border-bottom pb-2 mb-3 fw-bold">Datos del Documento de Identidad</h5>
+          <div class="row mb-4">
+            <div class="col-md-6 mb-3">
+              <span class="text-muted d-block small">Tipo de Documento:</span>
+              <strong class="text-dark">{{ u.tipoDocumento }}</strong>
+            </div>
+            <div class="col-md-6 mb-3">
+              <span class="text-muted d-block small">Número de Documento:</span>
+              <strong class="text-dark font-monospace">{{ u.numeroDocumento }}</strong>
+            </div>
+          </div>
+
+          <h5 class="text-muted border-bottom pb-2 mb-3 fw-bold">Información de Contacto y Acceso</h5>
+          <div class="row mb-4">
+            <div class="col-md-12 mb-3">
+              <span class="text-muted d-block small">Correo Electrónico Corporativo:</span>
+              <strong class="text-primary fw-semibold"><i class="bi bi-envelope-at small me-1"></i>{{ u.correo }}</strong>
+            </div>
+          </div>
+
+          <h5 class="text-muted border-bottom pb-2 mb-3 fw-bold">Documentación de Alquiler</h5>
+          <div class="row align-items-center mb-2">
+            <div class="col-md-6 mb-3">
+              <span class="text-muted d-block small mb-1">Contrato de Arrendamiento:</span>
+              @if (tieneContrato(u)) {
+                <button type="button" class="btn btn-outline-danger mt-1 fw-bold btn-sm px-3 shadow-sm" [appVerContrato]="u.id!">
+                  <i class="bi bi-file-earmark-pdf-fill me-1"></i> Descargar Contrato PDF
+                </button>
+              } @else {
+                <div class="alert alert-warning py-2 px-3 mt-1 mb-0 small rounded-3 d-inline-block border shadow-sm">
+                  <i class="bi bi-clock-history me-1 text-dark fw-bold"></i> Contrato pendiente de carga por administración
+                </div>
+              }
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <span class="text-muted d-block small mb-1">Voucher de Pago:</span>
+              @if (u.urlVoucher?.trim()) {
+                <a [href]="u.urlVoucher" target="_blank" rel="noopener" class="btn btn-outline-info mt-1 fw-bold btn-sm px-3 shadow-sm">
+                  <i class="bi bi-link-45deg fs-6 me-1"></i> Ver Enlace del Voucher
+                </a>
+              } @else {
+                <div class="alert alert-secondary py-2 px-3 mt-1 mb-0 small rounded-3 d-inline-block text-muted border bg-white shadow-sm">
+                  <i class="bi bi-slash-circle me-1"></i> No registrado
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="card-footer bg-white p-3 d-flex justify-content-end border-top-0">
+          <a class="btn btn-warning px-4 fw-bold shadow-sm text-dark" routerLink="/mi-perfil/editar">
+            <i class="bi bi-pencil-square me-1"></i> Editar Datos Básicos
+          </a>
+        </div>
+      </div>
+    } @else {
+      <div class="text-center p-5"><div class="spinner-border"></div></div>
+    }
+  </div>
+</div>

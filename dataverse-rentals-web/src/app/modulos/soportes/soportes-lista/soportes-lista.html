@@ -1,0 +1,155 @@
+<div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+  <div>
+    <h2 class="text-dark fw-bold mb-0">
+      <i class="bi bi-chat-left-dots text-success me-2"></i> Buzón Central de Soporte Técnico
+    </h2>
+    <p class="text-muted small mb-0">Monitoreo global de incidencias, control de prioridades y asignación de órdenes de mantenimiento</p>
+  </div>
+  <a class="btn btn-primary fw-bold shadow-sm px-4" routerLink="/soporte/nuevo">
+    <i class="bi bi-plus-circle-fill me-1"></i> Nuevo Ticket
+  </a>
+</div>
+
+<div class="row mb-4">
+  <div class="col-md-4 mb-2">
+    <div class="card border-0 shadow-sm bg-warning bg-opacity-10 text-warning p-3 rounded-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <span class="text-uppercase small fw-bold text-muted d-block">Casos en Espera / Pendientes</span>
+          <h3 class="mb-0 fw-bold text-dark mt-1">{{ casosEnEspera() }}</h3>
+        </div>
+        <i class="bi bi-clock-history fs-2 text-warning"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-2">
+    <div class="card border-0 shadow-sm bg-danger bg-opacity-10 text-danger p-3 rounded-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <span class="text-uppercase small fw-bold text-muted d-block">Prioridades Altas / Emergencias</span>
+          <h3 class="mb-0 fw-bold text-dark mt-1">{{ emergenciasCriticas() }}</h3>
+        </div>
+        <i class="bi bi-exclamation-triangle-fill fs-2 text-danger"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-2">
+    <div class="card border-0 shadow-sm bg-success bg-opacity-10 text-success p-3 rounded-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <span class="text-uppercase small fw-bold text-muted d-block">Tickets Resueltos Totales</span>
+          <h3 class="mb-0 fw-bold text-dark mt-1">{{ ticketsResueltos() }}</h3>
+        </div>
+        <i class="bi bi-check-circle-fill fs-2 text-success"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (cargando()) {
+  <div class="text-center p-5"><div class="spinner-border"></div></div>
+} @else {
+  <div class="card shadow-sm border-0 rounded-3">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 bg-white">
+          <thead class="table-light border-bottom">
+            <tr>
+              <th class="ps-4 py-3">Reporte / Incidencia</th>
+              <th class="py-3">Inquilino Solicitante</th>
+              <th class="py-3">Ubicación / Dpto</th>
+              <th class="text-center py-3" style="width: 110px;">Prioridad</th>
+              <th class="text-center py-3" style="width: 140px;">Estado Actual</th>
+              <th class="text-center py-3" style="width: 150px;">Orden Técnica</th>
+              <th class="text-end pe-4 py-3">Operaciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (t of tickets(); track t.id) {
+              <tr>
+                <td class="ps-4">
+                  <div class="fw-bold text-dark text-truncate" style="max-width: 200px;" [title]="t.descripcion">
+                    {{ t.descripcion }}
+                  </div>
+                  <small class="text-muted font-monospace" style="font-size: 0.75rem;">
+                    <i class="bi bi-calendar-event me-1"></i>{{ t.fechaRegistro | date:'dd/MM/yyyy HH:mm' }}
+                  </small>
+                </td>
+
+                <td class="fw-bold text-secondary small">
+                  <i class="bi bi-person-fill me-1"></i> {{ t.nombreUsuario }}
+                </td>
+
+                <td>
+                  <span class="badge bg-light text-dark border font-monospace" style="font-size: 0.75rem;">
+                    {{ t.nombreDepartamento }}
+                  </span>
+                </td>
+
+                <td class="text-center">
+                  @switch (t.prioridad) {
+                    @case ('Alta') { <span class="badge bg-danger text-white px-2 py-1 small">Alta</span> }
+                    @case ('Baja') { <span class="badge bg-light text-muted border px-2 py-1 small">Baja</span> }
+                    @default { <span class="badge bg-info text-dark px-2 py-1 small">Media</span> }
+                  }
+                </td>
+
+                <td class="text-center">
+                  @switch (t.estado) {
+                    @case ('PENDIENTE') {
+                      <span class="badge bg-warning bg-opacity-10 text-warning px-3 py-2 rounded-pill fw-bold border border-warning border-opacity-25">
+                        <i class="bi bi-clock me-1"></i> Pendiente
+                      </span>
+                    }
+                    @case ('EN_PROCESO') {
+                      <span class="badge bg-info bg-opacity-10 text-info px-3 py-2 rounded-pill fw-bold border border-info border-opacity-25">
+                        <i class="bi bi-gear-fill me-1"></i> En Proceso
+                      </span>
+                    }
+                    @default {
+                      <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill fw-bold border border-success border-opacity-25">
+                        <i class="bi bi-check-circle-fill me-1"></i> Resuelto
+                      </span>
+                    }
+                  }
+                </td>
+
+                <td class="text-center">
+                  @if (t.mantenimientoId) {
+                    <a class="badge bg-primary text-decoration-none px-2 py-1 shadow-sm"
+                       [routerLink]="['/mantenimientos/detalle', t.mantenimientoId]">
+                      <i class="bi bi-tools me-1"></i> #{{ t.mantenimientoId }}
+                    </a>
+                  } @else {
+                    <span class="text-muted small fst-italic"><i class="bi bi-dash-circle me-1"></i> Sin asignar</span>
+                  }
+                </td>
+
+                <td class="text-end pe-4">
+                  <div class="btn-group shadow-sm rounded border bg-white">
+                    <a class="btn btn-white btn-sm border-end py-2 px-3" title="Editar / Asignar" [routerLink]="['/soporte/editar', t.id]">
+                      <span class="text-warning fw-bold"><i class="bi bi-pencil-fill"></i></span>
+                    </a>
+                    <a class="btn btn-white btn-sm border-end py-2 px-3" title="Detalles" [routerLink]="['/soporte/detalle', t.id]">
+                      <span class="text-info fw-bold"><i class="bi bi-search"></i></span>
+                    </a>
+                    <button class="btn btn-white btn-sm py-2 px-3" title="Eliminar" (click)="eliminar(t)">
+                      <span class="text-danger fw-bold"><i class="bi bi-trash-fill"></i></span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="7" class="text-center text-muted py-5">
+                  <i class="bi bi-chat-left-check fs-2 d-block mb-2 text-secondary"></i>
+                  No se registran solicitudes de soporte técnico abiertas en este momento.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+}

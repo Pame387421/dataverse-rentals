@@ -1,0 +1,117 @@
+<div class="d-flex flex-column min-vh-100 bg-light">
+
+  <!-- Barra superior -->
+  <nav class="navbar navbar-dark bg-success px-3 shadow-sm d-print-none">
+    <a class="navbar-brand fw-bold" [routerLink]="auth.rutaInicio()">
+      <i class="bi bi-building-gear"></i> Dataverse Rentals
+    </a>
+    <div class="ms-auto text-white small d-flex align-items-center gap-3">
+      @if (auth.sesion(); as s) {
+      <span><i class="bi bi-person-circle"></i> {{ s.nombre }} (<strong class="text-warning">{{ s.rol
+          }}</strong>)</span>
+      }
+
+      <a class="btn btn-sm btn-outline-light" routerLink="/cambiar-clave">
+        <i class="bi bi-key"></i> Contraseña
+      </a>
+
+      <!-- Cambio 1: Botón de seguridad para configurar el MFA -->
+      <a class="btn btn-sm btn-outline-light" routerLink="/configurar-mfa">
+        <i class="bi bi-shield-lock"></i> Seguridad
+      </a>
+      <button class="btn btn-sm btn-outline-light" (click)="auth.cerrarSesion()">
+        <i class="bi bi-box-arrow-left"></i> Salir
+      </button>
+    </div>
+  </nav>
+
+  <div class="d-flex flex-grow-1">
+    <aside class="bg-white border-end p-3 shadow-sm sidebar-scroll d-print-none"
+      style="width: 280px; min-height: calc(100vh - 56px)">
+      <ul class="nav flex-column gap-1">
+
+        @if (auth.esAdministrador()) {
+        <li class="nav-item">
+          <a class="nav-link text-dark" routerLink="/panel" routerLinkActive="fw-bold bg-success bg-opacity-10">
+            <i class="bi bi-speedometer2 text-success me-2"></i> Panel principal
+          </a>
+        </li>
+
+        <li class="nav-item text-muted fw-bold mt-3 mb-1 small text-uppercase">Infraestructura</li>
+        <li class="nav-item"><a class="nav-link text-dark" routerLink="/edificios"
+            routerLinkActive="fw-bold bg-success bg-opacity-10"><i class="bi bi-building text-success me-2"></i>
+            Edificios</a></li>
+        <li class="nav-item"><a class="nav-link text-dark" routerLink="/departamentos"
+            routerLinkActive="fw-bold bg-success bg-opacity-10"><i class="bi bi-door-open text-success me-2"></i>
+            Departamentos</a></li>
+        <li class="nav-item"><a class="nav-link text-dark" routerLink="/medidores"
+            routerLinkActive="fw-bold bg-success bg-opacity-10"><i class="bi bi-lightning text-success me-2"></i>
+            Medidores</a></li>
+        <li class="nav-item"><a class="nav-link text-dark" routerLink="/lecturas"
+            routerLinkActive="fw-bold bg-success bg-opacity-10"><i class="bi bi-speedometer text-success me-2"></i>
+            Lecturas de Medidor</a></li>
+        <li class="nav-item"><a class="nav-link text-dark" routerLink="/mantenimientos"
+            routerLinkActive="fw-bold bg-success bg-opacity-10"><i class="bi bi-tools text-success me-2"></i>
+            Mantenimientos</a></li>
+        <li class="nav-item"><a class="nav-link text-dark" routerLink="/soporte"
+            routerLinkActive="fw-bold bg-success bg-opacity-10"><i class="bi bi-chat-left-dots text-success me-2"></i>
+            Soporte General</a></li>
+
+        <li class="nav-item text-muted fw-bold mt-3 mb-1 small text-uppercase">Personas</li>
+        <li class="nav-item"><a class="nav-link text-dark" routerLink="/usuarios"
+            routerLinkActive="fw-bold bg-success bg-opacity-10"><i class="bi bi-people text-primary me-2"></i> Gestión
+            de Usuarios</a></li>
+
+        <li class="nav-item text-muted fw-bold mt-3 mb-1 small text-uppercase">Finanzas</li>
+        <li class="nav-item"><a class="nav-link text-dark" routerLink="/contratos"
+            routerLinkActive="fw-bold bg-success bg-opacity-10"><i class="bi bi-file-earmark-text text-danger me-2"></i>
+            Contratos</a></li>
+        <li class="nav-item"><a class="nav-link text-dark" routerLink="/pagos"
+            routerLinkActive="fw-bold bg-success bg-opacity-10"><i class="bi bi-cash-coin text-danger me-2"></i> Pagos
+            Globales</a></li>
+        <li class="nav-item"><a class="nav-link text-dark" routerLink="/boletas"
+            routerLinkActive="fw-bold bg-success bg-opacity-10"><i class="bi bi-receipt text-danger me-2"></i> Boletas
+            Emitidas</a></li>
+
+        <li class="nav-item text-muted fw-bold mt-3 mb-1 small text-uppercase">Administración</li>
+        <li class="nav-item"><a class="nav-link text-dark" routerLink="/proveedores"
+            routerLinkActive="fw-bold bg-success bg-opacity-10"><i class="bi bi-box-seam text-warning me-2"></i>
+            Proveedores</a></li>
+        <li class="nav-item"><a class="nav-link text-dark" routerLink="/encuestas"
+            routerLinkActive="fw-bold bg-success bg-opacity-10"><i class="bi bi-clipboard-check text-warning me-2"></i>
+            Encuestas</a></li>
+        <li class="nav-item"><a class="nav-link text-dark" routerLink="/estado-sistema"
+            routerLinkActive="fw-bold bg-success bg-opacity-10"><i
+              class="bi bi-gear-wide-connected text-warning me-2"></i> Estado del Sistema</a></li>
+        <li class="nav-item"><a class="nav-link text-dark" routerLink="/reportes"
+            routerLinkActive="fw-bold bg-success bg-opacity-10"><i class="bi bi-bar-chart-line text-danger me-2"></i>
+            Reportes</a></li>
+        }
+
+        @if (auth.esInquilino()) {
+        <li class="nav-item text-muted fw-bold mt-2 mb-1 small text-uppercase">Mis Alquileres</li>
+        <li class="nav-item"><a class="nav-link text-dark" routerLink="/mis-boletas"
+            routerLinkActive="fw-bold bg-success bg-opacity-10"><i class="bi bi-receipt-cutoff text-success me-2"></i>
+            Mis Recibos / Boletas</a></li>
+        <!-- Cambio 2: Botón seguro de Mi Contrato PDF con directiva inyectada -->
+        <li class="nav-item">
+          <button type="button" class="nav-link text-dark w-100 border-0 bg-transparent text-start"
+            [appVerContrato]="auth.sesion()?.usuarioId ?? 0">
+            <i class="bi bi-file-earmark-pdf text-success me-2"></i> Mi Contrato PDF
+          </button>
+        </li>
+        <!-- Aquí irán: Mi Perfil Corporativo, Mis Tickets de Soporte,
+               Registrar Mis Pagos y Mi Feedback / Encuesta -->
+        }
+      </ul>
+    </aside>
+
+    <main class="flex-grow-1 p-4 bg-white" style="min-width: 0">
+      <router-outlet />
+    </main>
+  </div>
+
+  <footer class="bg-light text-center text-muted py-3 border-top mt-auto d-print-none">
+    <small>&copy; {{ anio }} - Dataverse Rentals</small>
+  </footer>
+</div>

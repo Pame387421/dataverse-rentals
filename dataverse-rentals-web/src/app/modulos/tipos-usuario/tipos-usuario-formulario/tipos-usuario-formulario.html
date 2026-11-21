@@ -1,0 +1,31 @@
+<div class="container mt-4" style="max-width: 600px;">
+  <div class="card shadow-lg border-0 rounded-lg">
+    <div class="card-header text-center py-3" [class]="esEdicion ? 'bg-warning text-dark' : 'bg-success text-white'">
+      <h3 class="mb-0 fw-bold">
+        <i class="bi me-2" [class]="esEdicion ? 'bi-pencil-square' : 'bi-shield-plus'"></i>
+        {{ esEdicion ? 'Editar Tipo de Usuario' : 'Registrar Tipo de Usuario' }}
+      </h3>
+    </div>
+    <div class="card-body p-4 bg-white">
+      <form [formGroup]="formulario" (ngSubmit)="guardar()">
+        
+        <div class="mb-3">
+          <label class="form-label text-secondary small fw-bold">Nombre del Rol</label>
+          <input type="text" class="form-control text-dark fw-bold" formControlName="nombre" placeholder="Ej: Administrador" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label text-secondary small fw-bold">Descripción</label>
+          <textarea class="form-control" rows="3" formControlName="descripcion" placeholder="Detalle de permisos y accesos..."></textarea>
+        </div>
+
+        <div class="d-flex justify-content-between mt-4 border-top pt-3">
+          <a class="btn btn-secondary fw-bold px-4 shadow-sm" routerLink="/tipos-usuario">Cancelar</a>
+          <button type="submit" class="btn fw-bold px-4 shadow-sm" [class]="esEdicion ? 'btn-warning text-dark' : 'btn-success'" [disabled]="guardando()">
+            <i class="bi bi-save me-1"></i> {{ esEdicion ? 'Actualizar Cambios' : 'Guardar Rol' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

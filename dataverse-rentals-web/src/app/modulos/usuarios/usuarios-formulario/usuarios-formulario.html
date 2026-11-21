@@ -1,0 +1,97 @@
+<h2 class="text-primary mb-4 fw-bold">
+  <i class="bi me-2" [class]="esEdicion ? 'bi-pencil-square' : 'bi-person-plus-fill'"></i>
+  {{ esEdicion ? 'Editar Usuario' : 'Registrar Usuario' }}
+</h2>
+
+<form [formGroup]="formulario" (ngSubmit)="guardar()">
+  <div class="card shadow-sm p-4 border-0 rounded-3 bg-white">
+    <div class="row">
+
+      <div class="col-md-6 mb-3">
+        <label class="form-label text-secondary small fw-bold">Nombre Completo</label>
+        <input class="form-control" formControlName="nombre" placeholder="Nombre completo" maxlength="100"
+               [class.is-invalid]="invalido('nombre')">
+        <div class="invalid-feedback">El nombre es obligatorio (máx. 100 caracteres).</div>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label class="form-label text-secondary small fw-bold">Correo Electrónico</label>
+        <input type="email" class="form-control" formControlName="correo" placeholder="Correo electrónico" maxlength="100"
+               [class.is-invalid]="invalido('correo')">
+        <div class="invalid-feedback">Ingrese un correo electrónico válido.</div>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label class="form-label text-secondary small fw-bold">Tipo de Documento</label>
+        <select class="form-select" formControlName="tipoDocumento" [class.is-invalid]="invalido('tipoDocumento')">
+          <option value="">Seleccione...</option>
+          @for (t of tiposDocumento; track t.valor) {
+            <option [value]="t.valor">{{ t.texto }}</option>
+          }
+        </select>
+        <div class="invalid-feedback">Seleccione el tipo de documento.</div>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label class="form-label text-secondary small fw-bold">Número de Documento</label>
+        <input class="form-control font-monospace" formControlName="numeroDocumento" maxlength="20"
+               [class.is-invalid]="invalido('numeroDocumento')">
+        <div class="invalid-feedback">El número de documento es obligatorio (máx. 20 caracteres).</div>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label class="form-label text-secondary small fw-bold">Tipo de Usuario (Rol)</label>
+        <select class="form-select" formControlName="tipoUsuarioId" [class.is-invalid]="invalido('tipoUsuarioId')">
+          <option [ngValue]="0">Seleccione...</option>
+          @for (t of tipos(); track t.id) {
+            <option [ngValue]="t.id">{{ t.nombre }}</option>
+          }
+        </select>
+        <div class="invalid-feedback">Seleccione un rol.</div>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <div class="form-floating mt-3">
+          <input class="form-control" id="urlVoucher" formControlName="urlVoucher"
+                 placeholder="https://ejemplo.com/voucher.pdf" maxlength="500" [class.is-invalid]="invalido('urlVoucher')">
+          <label for="urlVoucher">URL del Voucher / Enlace de Pago</label>
+          <div class="invalid-feedback">Ingrese una URL válida que empiece con http:// o https://.</div>
+        </div>
+      </div>
+
+      <div class="col-md-12 mb-3">
+        <label class="form-label text-secondary small fw-bold">
+          <i class="bi bi-file-earmark-pdf text-danger"></i>
+          {{ esEdicion ? 'Reemplazar Contrato Digital (PDF)' : 'Adjuntar Contrato Digital (PDF)' }}
+        </label>
+        <input class="form-control" type="file" accept=".pdf" (change)="alElegirArchivo($event)"
+               [class.is-invalid]="errorArchivo()">
+        <div class="invalid-feedback">{{ errorArchivo() }}</div>
+        <div class="form-text text-muted small">
+          @if (esEdicion) {
+            Deje este campo vacío si no desea modificar el archivo actual. Solo formatos .pdf de hasta 10MB
+          } @else {
+            Solo se permiten documentos en formato .pdf de hasta 10MB
+          }
+        </div>
+        @if (esEdicion && contratoActual()) {
+          <div class="small mt-1">
+            Contrato actual:
+            <button type="button" class="btn btn-link p-0 fw-bold text-danger text-decoration-none" [appVerContrato]="id!">
+              <i class="bi bi-file-earmark-pdf"></i> Ver contrato
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between mt-4 border-top pt-3">
+      <a class="btn btn-secondary fw-bold px-4 shadow-sm" routerLink="/usuarios">
+        <i class="bi bi-arrow-left-circle me-1"></i> {{ esEdicion ? 'Volver' : 'Volver al Listado' }}
+      </a>
+      <button type="submit" class="btn btn-success fw-bold px-4 shadow-sm" [disabled]="guardando()">
+        <i class="bi bi-save me-1"></i> {{ esEdicion ? 'Guardar Cambios' : 'Registrar Cuenta' }}
+      </button>
+    </div>
+  </div>
+</form>

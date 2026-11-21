@@ -1,0 +1,110 @@
+<p>encuestas-lista works!</p>
+<div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+  <div>
+    <h2 class="text-dark fw-bold mb-0">
+      <i class="bi bi-clipboard-check text-success me-2"></i> Gestión de Encuestas y Satisfacción
+    </h2>
+    <p class="text-muted small mb-0">Monitoreo de feedback, control de calidad del servicio e índice de satisfacción del portafolio inmobiliario</p>
+  </div>
+  <a class="btn btn-success fw-bold shadow-sm px-4" routerLink="/encuestas/nuevo">
+    <i class="bi bi-plus-circle-fill me-1"></i> Nueva Encuesta / Feedback
+  </a>
+</div>
+
+<div class="row mb-4">
+  <div class="col-md-4 mb-2">
+    <div class="card border-0 shadow-sm bg-warning bg-opacity-10 text-warning p-3 rounded-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <span class="text-uppercase small fw-bold text-muted d-block">Índice de Satisfacción</span>
+          <h3 class="mb-0 fw-bold text-dark mt-1">
+            📊 {{ promedioSatisfaccion() | number:'1.2-2' }} <span class="fs-6 text-muted fw-normal">/ 5.00</span>
+          </h3>
+        </div>
+        <i class="bi bi-star-half fs-2 text-warning"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-2">
+    <div class="card border-0 shadow-sm bg-success bg-opacity-10 text-success p-3 rounded-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <span class="text-uppercase small fw-bold text-muted d-block">Total de Feedbacks</span>
+          <h3 class="mb-0 fw-bold text-dark mt-1">{{ totalFeedbacks() }} formularios</h3>
+        </div>
+        <i class="bi bi-chat-heart-fill fs-2 text-success"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-2">
+    <div class="card border-0 shadow-sm bg-primary bg-opacity-10 text-primary p-3 rounded-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <span class="text-uppercase small fw-bold text-muted d-block">Calificaciones Excelentes</span>
+          <h3 class="mb-0 fw-bold text-dark mt-1">
+            {{ calificacionesExcelentes() }} <span class="fs-6 text-muted fw-normal">de {{ totalFeedbacks() }}</span>
+          </h3>
+        </div>
+        <i class="bi bi-shield-heart-fill fs-2 text-primary"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (cargando()) {
+  <div class="text-center p-5"><div class="spinner-border"></div></div>
+} @else {
+  <div class="card shadow-sm border-0 rounded-3">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 bg-white">
+          <thead class="table-light border-bottom">
+            <tr>
+              <th class="ps-4 py-3">Inquilino Remitente</th>
+              <th class="text-center py-3" style="width: 160px;">Índice / Calificación</th>
+              <th class="py-3">Comentario o Feedback Recibido</th>
+              <th class="py-3 pe-4" style="width: 180px;">Fecha Registro</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (e of encuestas(); track e.id) {
+              <tr>
+                <td class="ps-4 fw-bold text-dark">
+                  <i class="bi bi-person-circle text-secondary me-2"></i>
+                  {{ e.nombreUsuario || 'Administración / Usuario Anónimo' }}
+                </td>
+                <td class="text-center">
+                  <div class="d-inline-block text-nowrap text-warning">
+                    @for (i of estrellas; track i) {
+                      @if (i <= e.calificacion) {
+                        <i class="bi bi-star-fill small"></i>
+                      } @else {
+                        <i class="bi bi-star text-muted small"></i>
+                      }
+                    }
+                  </div>
+                  <small class="text-muted d-block font-monospace" style="font-size: 0.75rem;">({{ e.calificacion }}/5)</small>
+                </td>
+                <td>
+                  <div class="text-muted small text-wrap" style="max-width: 450px;" [title]="e.comentario">
+                    {{ e.comentario || 'Sin comentarios adicionales.' }}
+                  </div>
+                </td>
+                <td class="pe-4 small text-secondary font-monospace">
+                  <i class="bi bi-calendar3 me-1"></i> {{ e.fechaRegistro | date:'dd/MM/yyyy HH:mm' }}
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" class="text-center text-muted py-5">
+                  <i class="bi bi-emoji-neutral fs-2 d-block mb-2 text-secondary"></i>
+                  No se registran valoraciones ni cuestionarios de satisfacción actualmente.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+}

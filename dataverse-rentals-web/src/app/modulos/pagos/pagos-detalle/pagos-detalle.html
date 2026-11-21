@@ -1,0 +1,84 @@
+@if (pago(); as p) {
+  <div class="card shadow-lg border-0 rounded-lg">
+    <div class="card-header bg-info text-white text-center py-3">
+      <h3 class="mb-0 fw-bold"><i class="bi bi-info-circle-fill me-1"></i> Detalles del Pago</h3>
+    </div>
+
+    <div class="card-body p-4 bg-white">
+      <div class="bg-light p-4 rounded shadow-sm mb-4 border">
+        <h5 class="text-secondary border-bottom pb-2 mb-3 fw-bold"><i class="bi bi-receipt me-1"></i> Información General</h5>
+
+        <dl class="row mb-0 align-middle">
+          <dt class="col-sm-3 text-muted small text-uppercase">Boleta / Inquilino</dt>
+          <dd class="col-sm-9 fw-bold text-dark">Boleta #{{ p.boletaId }} — {{ p.inquilino }}</dd>
+
+          <dt class="col-sm-3 text-muted small text-uppercase mt-2">Departamento</dt>
+          <dd class="col-sm-9 mt-2 text-dark">{{ p.nombreDepartamento }}</dd>
+
+          <dt class="col-sm-3 text-muted small text-uppercase mt-2">Fecha de Pago</dt>
+          <dd class="col-sm-9 mt-2 text-dark font-monospace">{{ p.fechaPago | date:'dd/MM/yyyy HH:mm' }}</dd>
+
+          <dt class="col-sm-3 text-dark fw-bold small text-uppercase border-top pt-2 mt-2">Monto Total</dt>
+          <dd class="col-sm-9 text-dark fw-bold border-top pt-2 mt-2 font-monospace fs-6">S/ {{ p.montoTotal | number:'1.2-2' }}</dd>
+
+          <dt class="col-sm-3 text-success fw-bold small text-uppercase mt-2">Monto Abonado</dt>
+          <dd class="col-sm-9 text-success fw-bold mt-2 font-monospace fs-6">S/ {{ p.montoAbonado | number:'1.2-2' }}</dd>
+
+          <dt class="col-sm-3 text-muted small text-uppercase mt-2">Saldo Pendiente</dt>
+          <dd class="col-sm-9 mt-2">
+            @if (p.saldoPendiente > 0) {
+              <span class="badge bg-warning text-dark px-3 py-2 fw-bold font-monospace fs-6">S/ {{ p.saldoPendiente | number:'1.2-2' }}</span>
+            } @else {
+              <span class="badge bg-success text-white px-3 py-2 fw-bold small shadow-sm">
+                <i class="bi bi-check-circle-fill me-1"></i> Totalmente Cancelado
+              </span>
+            }
+          </dd>
+
+          <dt class="col-sm-3 text-muted small text-uppercase border-top pt-2 mt-2">Voucher Adjunto</dt>
+          <dd class="col-sm-9 border-top pt-2 mt-2">
+                 @if (p.tieneVoucherPdf) {
+              <button type="button" class="btn btn-sm btn-outline-danger px-3 py-1 fw-bold" style="font-size: 0.8rem;" [appVerVoucher]="p.id!">
+                <i class="bi bi-file-pdf-fill me-1"></i> Ver PDF Local
+              </button>
+            } @else if (p.urlVoucher) {
+              <a [href]="p.urlVoucher" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary px-3 py-1 fw-bold" style="font-size: 0.8rem;">
+                <i class="bi bi-link-45deg me-1"></i> Ver Enlace Externo
+              </a>
+            } @else {
+              <span class="text-muted small fst-italic"><i class="bi bi-paperclip me-1"></i> No se adjuntó comprobante</span>
+            }
+          </dd>
+        </dl>
+      </div>
+
+      <h4 class="text-secondary mb-3 mt-4 fw-bold"><i class="bi bi-list-check me-1"></i> Desglose de Conceptos de Cobro</h4>
+      <table class="table table-bordered table-hover shadow-sm align-middle bg-white mb-0">
+        <thead class="table-dark">
+          <tr>
+            <th class="ps-3">Concepto</th>
+            <th style="width: 250px;" class="text-end pe-4">Monto Facturado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="ps-3 fw-semibold text-dark">Alquiler Base</td><td class="text-end pe-4 font-monospace fw-bold text-secondary">S/ {{ p.alquiler | number:'1.2-2' }}</td></tr>
+          <tr><td class="ps-3 fw-semibold text-dark">Consumo de Luz</td><td class="text-end pe-4 font-monospace fw-bold text-secondary">S/ {{ p.consumoLuz | number:'1.2-2' }}</td></tr>
+          <tr><td class="ps-3 fw-semibold text-dark">Consumo de Agua</td><td class="text-end pe-4 font-monospace fw-bold text-secondary">S/ {{ p.consumoAgua | number:'1.2-2' }}</td></tr>
+          <tr><td class="ps-3 fw-semibold text-dark">Consumo de Gas</td><td class="text-end pe-4 font-monospace fw-bold text-secondary">S/ {{ p.consumoGas | number:'1.2-2' }}</td></tr>
+          <tr><td class="ps-3 fw-semibold text-dark">Arbitrios Municipales</td><td class="text-end pe-4 font-monospace fw-bold text-secondary">S/ {{ p.arbitrios | number:'1.2-2' }}</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card-footer d-flex justify-content-between p-3 bg-white border-top-0">
+      <a class="btn btn-secondary btn-lg fw-bold fs-6 shadow-sm px-4" routerLink="/pagos">
+        <i class="bi bi-arrow-left-circle me-1"></i> Volver al Listado
+      </a>
+      <button class="btn btn-danger btn-lg shadow-sm fw-bold fs-6 px-4" (click)="anular()">
+        <i class="bi bi-trash3-fill me-1"></i> Anular este Pago
+      </button>
+    </div>
+  </div>
+} @else {
+  <div class="text-center p-5"><div class="spinner-border"></div></div>
+}

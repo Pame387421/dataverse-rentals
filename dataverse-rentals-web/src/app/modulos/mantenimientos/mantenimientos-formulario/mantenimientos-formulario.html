@@ -1,0 +1,132 @@
+
+<div class="container mt-4">
+  <div class="card shadow-lg border-0 rounded-lg" style="max-width: 900px; margin: auto;">
+    <div class="card-header text-center py-3" [class]="esEdicion ? 'bg-warning text-dark' : 'bg-success text-white'">
+      <h3 class="mb-0 fw-bold">
+        <i class="bi me-2" [class]="esEdicion ? 'bi-pencil-square' : 'bi-tools'"></i>
+        {{ esEdicion ? 'Modificar Orden de Mantenimiento' : 'Registrar Orden de Mantenimiento' }}
+      </h3>
+    </div>
+    <div class="card-body p-4 bg-white">
+      <form [formGroup]="formulario" (ngSubmit)="guardar()">
+        
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label text-secondary small fw-bold">Departamento / Unidad</label>
+            <select class="form-select" formControlName="departamentoId" [class.is-invalid]="invalido('departamentoId')">
+              <option [ngValue]="0">-- Seleccione el Departamento --</option>
+              @for (d of departamentos(); track d.valor) {
+                <option [ngValue]="d.valor">{{ d.texto }}</option>
+              }
+            </select>
+            <div class="invalid-feedback">Seleccione un departamento.</div>
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label text-secondary small fw-bold">Proveedor Asignado</label>
+            <select class="form-select" formControlName="proveedorId" [class.is-invalid]="invalido('proveedorId')">
+              <option [ngValue]="0">-- Seleccione el Proveedor Técnico --</option>
+              @for (p of proveedores(); track p.valor) {
+                <option [ngValue]="p.valor">{{ p.texto }}</option>
+              }
+            </select>
+            <div class="invalid-feedback">Seleccione un proveedor.</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label class="form-label text-secondary small fw-bold">Categoría</label>
+            <select class="form-select" formControlName="categoria">
+              <option value="Correctivo">Correctivo</option>
+              <option value="Preventivo">Preventivo</option>
+              <option value="Mejora">Mejora de Unidad</option>
+            </select>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label class="form-label text-secondary small fw-bold">Estado de la Orden</label>
+            @if (esEdicion) {
+              <select class="form-select fw-bold text-dark" formControlName="estado">
+                <option value="PENDIENTE">Pendiente</option>
+                <option value="EN_PROCESO">En Proceso</option>
+                <option value="FINALIZADO">Finalizado</option>
+              </select>
+            } @else {
+              <input class="form-control bg-light text-muted fw-bold" type="text" value="Pendiente" readonly disabled />
+            }
+          </div>
+
+          <div class="col-md-4 mb-3">
+                        <label class="form-label text-secondary small fw-bold">Ticket de Soporte Origen</label>
+                        @if (esEdicion) {
+                          <input class="form-control bg-light text-muted" type="text" [value]="textoTicketActual()" readonly disabled />
+                         } @else {
+                           <select class="form-select" formControlName="ticketSoporteId">
+                            <option [ngValue]="null">-- Ninguno (Mantenimiento Directo) --</option>
+                            @for (t of ticketsFiltrados(); track t.valor) {
+                              <option [ngValue]="t.valor">{{ t.texto }}</option>
+                            }
+                          </select>
+                        }
+                      </div>
+                    </div>
+
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label class="form-label text-secondary small fw-bold">Costo Materiales (S/)</label>
+            <input class="form-control font-monospace text-dark fw-bold" type="number" step="0.01" min="0"
+                   formControlName="costoMateriales" [class.is-invalid]="invalido('costoMateriales')" />
+                   <div class="invalid-feedback">Ingrese un monto mayor o igual a 0.</div>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label class="form-label text-secondary small fw-bold">Costo Mano Obra (S/)</label>
+            <input class="form-control font-monospace text-dark fw-bold" type="number" step="0.01" min="0"
+                   formControlName="costoManoObra" [class.is-invalid]="invalido('costoManoObra')" />
+                   <div class="invalid-feedback">Ingrese un monto mayor o igual a 0.</div>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label class="form-label text-secondary small fw-bold">Costo Total Estimado (S/)</label>
+            <input class="form-control font-monospace text-success fw-bold bg-light" type="text"
+            [value]="costoTotalCalculado()" readonly />
+          </div>
+        </div>
+
+        @if (esEdicion) {
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label text-secondary small fw-bold">Fecha de Ejecución</label>
+              <input class="form-control" type="date" formControlName="fechaEjecucion" />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label text-secondary small fw-bold">Fecha de Finalización</label>
+              <input class="form-control" type="date" formControlName="fechaFinalizacion" />
+            </div>
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label text-secondary small fw-bold">Descripción Técnica de la Orden</label>
+          <textarea class="form-control" rows="3" formControlName="descripcion" maxlength="500"
+                    [class.is-invalid]="invalido('descripcion')"></textarea>
+          <div class="invalid-feedback">La descripción es obligatoria.</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label text-secondary small fw-bold">Garantías / Observaciones Técnicas</label>
+          <textarea class="form-control" rows="2" formControlName="observaciones" maxlength="500"></textarea>
+        </div>
+
+        <div class="d-flex justify-content-between mt-4 border-top pt-3">
+          <a class="btn btn-secondary btn-lg fw-bold small fs-6 px-4 shadow-sm" routerLink="/mantenimientos">Volver</a>
+          <button type="submit" class="btn btn-lg fw-bold small fs-6 px-4 shadow-sm"
+                  [class]="esEdicion ? 'btn-warning text-dark' : 'btn-success'" [disabled]="guardando()">
+            <i class="bi bi-save me-1"></i> {{ esEdicion ? 'Guardar Cambios' : 'Guardar Orden' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

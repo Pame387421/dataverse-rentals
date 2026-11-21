@@ -1,0 +1,56 @@
+<div class="card shadow-lg border-0 rounded-lg" style="max-width: 700px">
+  <div class="card-header text-center py-3" [class]="esEdicion ? 'bg-warning text-dark' : 'bg-success text-white'">
+    <h3 class="mb-0 fw-bold">
+      <i class="bi me-2" [class]="esEdicion ? 'bi-pencil-square' : 'bi-file-earmark-plus'"></i>
+      {{ esEdicion ? 'Editar Proveedor' : 'Registrar Nuevo Proveedor' }}
+    </h3>
+  </div>
+  <div class="card-body p-4 bg-white">
+    <form [formGroup]="formulario" (ngSubmit)="guardar()">
+
+      <div class="mb-3">
+        <label class="form-label text-secondary small fw-bold">Razón Social / Nombre Comercial</label>
+        <input class="form-control text-dark" [class.fw-bold]="esEdicion" formControlName="nombre"
+               placeholder="Ej: Servicios Generales SAC" maxlength="100" [class.is-invalid]="invalido('nombre')">
+        <div class="invalid-feedback">La razón social es obligatoria (máx. 100 caracteres).</div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label text-secondary small fw-bold">RUC (Registro Único de Contribuyentes)</label>
+        <input class="form-control font-monospace text-dark fw-bold" formControlName="ruc"
+               placeholder="Ej: 20123456789" maxlength="11" inputmode="numeric" [class.is-invalid]="invalido('ruc')">
+        <div class="form-text text-muted small">Debe ingresar exactamente 11 números correspondientes al registro tributario peruano.</div>
+        <div class="invalid-feedback">El RUC debe constar de exactamente 11 dígitos numéricos.</div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label text-secondary small fw-bold">Correo Electrónico de Contacto</label>
+        <div class="input-group has-validation">
+          <span class="input-group-text bg-light text-muted"><i class="bi bi-envelope"></i></span>
+          <input type="email" class="form-control text-dark" formControlName="correo"
+                 placeholder="proveedor@empresa.com" maxlength="100" [class.is-invalid]="invalido('correo')">
+          <div class="invalid-feedback">Ingrese un correo electrónico válido.</div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label text-secondary small fw-bold">Teléfono Central / Celular</label>
+        <div class="input-group has-validation">
+          <span class="input-group-text bg-light text-muted"><i class="bi bi-telephone"></i></span>
+          <input type="tel" class="form-control text-dark font-monospace" [class.fw-bold]="esEdicion"
+                 formControlName="telefono" placeholder="Ej: 987654321 o (01) 444-5555" maxlength="20"
+                 [class.is-invalid]="invalido('telefono')">
+          <div class="invalid-feedback">El teléfono es obligatorio (máx. 20 caracteres).</div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between mt-4 border-top pt-3">
+        <a class="btn btn-secondary fw-bold px-4 shadow-sm" routerLink="/proveedores">Cancelar</a>
+        <button type="submit" class="btn fw-bold px-4 shadow-sm" [disabled]="guardando()"
+                [class]="esEdicion ? 'btn-warning text-dark' : 'btn-success'">
+          <i class="bi bi-save me-1"></i> {{ esEdicion ? 'Actualizar Cambios' : 'Guardar Proveedor' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,106 @@
+<div class="card shadow-lg border-0 rounded-lg" style="max-width: 800px">
+  <div class="card-header text-center py-3" [class]="esEdicion ? 'bg-warning text-dark' : 'bg-primary text-white'">
+    <h3 class="mb-0 fw-bold">
+      <i class="bi me-2" [class]="esEdicion ? 'bi-pencil-square' : 'bi-chat-left-dots'"></i>
+      {{ esEdicion ? 'Editar Ticket de Soporte' : 'Registrar Ticket de Soporte' }}
+    </h3>
+  </div>
+  <div class="card-body p-4 bg-white">
+    <form [formGroup]="formulario" (ngSubmit)="guardar()">
+
+      <div class="row">
+        @if (auth.esAdministrador()) {
+          <div class="col-md-6 mb-3">
+            <label class="form-label text-secondary small fw-bold">
+              {{ esEdicion ? 'Inquilino / Residente' : 'Inquilino Solicitante' }}
+            </label>
+            <select class="form-select text-dark" formControlName="usuarioId" [class.is-invalid]="invalido('usuarioId')">
+              <option [ngValue]="0">-- Seleccione un Inquilino --</option>
+              @for (u of usuarios(); track u.valor) {
+                <option [ngValue]="u.valor">{{ u.texto }}</option>
+              }
+            </select>
+            <div class="invalid-feedback">Seleccione un inquilino.</div>
+          </div>
+        }
+
+        <div [class]="auth.esAdministrador() ? 'col-md-6 mb-3' : 'col-md-12 mb-3'">
+          <label class="form-label text-secondary small fw-bold">Departamento Afectado</label>
+          <select class="form-select text-dark" formControlName="departamentoId" [class.is-invalid]="invalido('departamentoId')">
+            <option [ngValue]="0">-- Seleccione un Departamento --</option>
+            @for (d of departamentos(); track d.valor) {
+              <option [ngValue]="d.valor">{{ d.texto }}</option>
+            }
+          </select>
+          <div class="invalid-feedback">Seleccione un departamento.</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div [class]="esEdicion ? 'col-md-4 mb-3' : 'col-md-6 mb-3'">
+          <label class="form-label text-secondary small fw-bold">{{ esEdicion ? 'Prioridad' : 'Prioridad Inicial' }}</label>
+          <select class="form-select text-dark" formControlName="prioridad">
+            <option value="Media">Media</option>
+            <option value="Baja">Baja</option>
+            <option value="Alta">Alta</option>
+          </select>
+        </div>
+
+        <div [class]="esEdicion ? 'col-md-4 mb-3' : 'col-md-6 mb-3'">
+          <label class="form-label text-secondary small fw-bold">
+            {{ esEdicion ? 'Estado Operativo Actual' : 'Estado Operativo' }}
+          </label>
+          @if (esEdicion) {
+            <select class="form-select text-dark fw-bold" formControlName="estado">
+              <option value="PENDIENTE">Pendiente</option>
+              <option value="EN_PROCESO">En Proceso</option>
+              <option value="RESUELTO">Resuelto</option>
+            </select>
+          } @else {
+            <input class="form-control bg-light text-muted fw-bold" type="text" value="Pendiente" readonly disabled>
+          }
+        </div>
+
+        @if (esEdicion) {
+          <div class="col-md-4 mb-3">
+            <label class="form-label text-secondary small fw-bold">Orden de Mantenimiento Relacionada</label>
+            <select class="form-select text-dark" formControlName="mantenimientoId">
+              <option [ngValue]="null">-- Sin mantenimiento vinculado --</option>
+              @for (m of mantenimientos(); track m.valor) {
+                <option [ngValue]="m.valor">{{ m.texto }}</option>
+              }
+            </select>
+          </div>
+        }
+      </div>
+
+      @if (esEdicion) {
+        <div class="form-text mb-3 mt-0">La fecha de cierre se registra sola al marcar el ticket como Resuelto.</div>
+      }
+
+      <div class="mb-3">
+        <label class="form-label text-secondary small fw-bold">Descripción de la Incidencia</label>
+        <textarea class="form-control text-dark" rows="3" formControlName="descripcion" maxlength="500"
+                  placeholder="Detalle la falla reportada por el inquilino..."
+                  [class.is-invalid]="invalido('descripcion')"></textarea>
+        <div class="invalid-feedback">La descripción técnica del ticket es obligatoria.</div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label text-secondary small fw-bold">Observaciones de Trabajo (Notas de Cierre)</label>
+        <textarea class="form-control text-dark" rows="2" formControlName="observaciones" maxlength="500"
+                  placeholder="Escriba resoluciones o detalles técnicos avanzados si aplica..."></textarea>
+      </div>
+
+      <div class="d-flex justify-content-between mt-4 border-top pt-3">
+        <a class="btn btn-secondary fw-bold px-4 shadow-sm" [routerLink]="volver">
+          <i class="bi bi-arrow-left-circle me-1"></i> {{ esEdicion ? 'Volver' : 'Volver al Listado' }}
+        </a>
+        <button type="submit" class="btn fw-bold px-4 shadow-sm" [disabled]="guardando()"
+                [class]="esEdicion ? 'btn-warning text-dark' : 'btn-success'">
+          <i class="bi bi-save me-1"></i> {{ esEdicion ? 'Actualizar Cambios' : 'Procesar Ticket' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

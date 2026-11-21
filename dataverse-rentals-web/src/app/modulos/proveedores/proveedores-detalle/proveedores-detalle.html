@@ -1,0 +1,41 @@
+@if (proveedor(); as p) {
+  <div class="card shadow-lg border-0 rounded-lg" style="max-width: 750px">
+    <div class="card-header bg-info text-white text-center py-3">
+      <h3 class="mb-0 fw-bold"><i class="bi bi-eye-fill me-2"></i>Detalles del Proveedor</h3>
+    </div>
+    <div class="card-body p-4 bg-white">
+      <dl class="row mb-0 pb-3 border-bottom">
+        <dt class="col-sm-3 text-secondary small text-uppercase fw-bold">Nombre / Razón Social</dt>
+        <dd class="col-sm-9 text-dark fw-bold">
+          <i class="bi bi-building-gear text-muted me-2"></i> {{ p.nombre || 'N/A' }}
+        </dd>
+
+        <dt class="col-sm-3 text-secondary small text-uppercase fw-bold mt-3">RUC (Sunat)</dt>
+        <dd class="col-sm-9 mt-3 text-dark font-monospace fw-bold"><code>{{ p.ruc || 'S/R' }}</code></dd>
+
+        <dt class="col-sm-3 text-secondary small text-uppercase fw-bold mt-3">Correo de Contacto</dt>
+        <dd class="col-sm-9 mt-3 text-dark">
+          <i class="bi bi-envelope text-muted me-2"></i> {{ p.correo || 'Sin correo registrado' }}
+        </dd>
+
+        <dt class="col-sm-3 text-secondary small text-uppercase fw-bold mt-3">Teléfono Central</dt>
+        <dd class="col-sm-9 mt-3 text-muted">
+          <span class="badge bg-light text-dark border px-3 py-2 small font-monospace">
+            <i class="bi bi-telephone text-secondary me-1"></i> {{ p.telefono || 'Sin teléfono registrado' }}
+          </span>
+        </dd>
+      </dl>
+
+      <div class="d-flex justify-content-between mt-4">
+        <a class="btn btn-secondary fw-bold px-4 shadow-sm" routerLink="/proveedores">
+          <i class="bi bi-arrow-left-circle me-1"></i> Volver al Catálogo
+        </a>
+        <a class="btn btn-warning fw-bold px-4 shadow-sm text-dark" [routerLink]="['/proveedores/editar', p.id]">
+          <i class="bi bi-pencil-square me-1"></i> Editar Información
+        </a>
+      </div>
+    </div>
+  </div>
+} @else {
+  <div class="text-center p-5"><div class="spinner-border"></div></div>
+}

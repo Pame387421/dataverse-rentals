@@ -1,0 +1,70 @@
+<div class="card shadow-lg border-0 rounded-lg">
+  <div class="card-header bg-primary text-white text-center p-3">
+    <h3 class="mb-0 fw-bold"><i class="bi bi-receipt-cutoff"></i> Historial de Facturación</h3>
+    <p class="mb-0 text-white-50 small">Consulta y descarga tus boletas mensuales de arrendamiento y servicios</p>
+  </div>
+  <div class="card-body p-4 bg-white">
+    @if (cargando()) {
+      <div class="text-center p-4"><div class="spinner-border"></div></div>
+    } @else {
+      <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle mb-0">
+          <thead class="table-dark">
+            <tr>
+              <th class="ps-3">Periodo / Mes</th>
+              <th>Fecha Emisión</th>
+              <th>Fecha Vencimiento</th>
+              <th>Departamento</th>
+              <th>Monto Total</th>
+              <th class="text-center">Estado</th>
+              <th class="text-end pe-3">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (b of boletas(); track b.id) {
+              <tr>
+                <td class="fw-bold text-capitalize ps-3 text-dark">{{ etiquetaPeriodo(b.fechaEmision) }}</td>
+                <td class="text-muted small">{{ b.fechaEmision | date:'dd/MM/yyyy' }}</td>
+                <td class="text-muted small">{{ b.fechaVencimiento | date:'dd/MM/yyyy' }}</td>
+                <td>
+                  <span class="badge bg-light text-dark border py-2 px-3">
+                    <i class="bi bi-building me-1 text-secondary"></i> {{ b.edificioNombre }} - Dpto {{ b.numeroDepartamento }}
+                  </span>
+                </td>
+                <td class="fw-bold text-success font-monospace">S/ {{ b.montoTotal | number:'1.2-2' }}</td>
+                <td class="text-center">
+                  @if (b.estado === 'PENDIENTE') {
+                    <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold small shadow-sm">
+                      <i class="bi bi-clock-history me-1"></i> Pendiente
+                    </span>
+                  } @else {
+                    <span class="badge bg-success text-white px-3 py-2 rounded-pill fw-bold small shadow-sm">
+                      <i class="bi bi-check-circle-fill me-1"></i> Pagado
+                    </span>
+                  }
+                </td>
+                <td class="text-end pe-3">
+                  <div class="btn-group gap-1 shadow-sm rounded">
+                    <a class="btn btn-sm btn-info fw-bold text-white px-3" [routerLink]="['/mis-boletas/detalle', b.id]">
+                      <i class="bi bi-search me-1"></i> Desglose
+                    </a>
+                    <a class="btn btn-sm btn-outline-danger fw-bold px-3" [routerLink]="['/mis-boletas/imprimir', b.id]">
+                      <i class="bi bi-printer me-1"></i> Imprimir / PDF
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="7" class="text-center text-muted py-5">
+                  <i class="bi bi-info-circle fs-3 d-block mb-2 text-secondary"></i>
+                  No tienes boletas de alquiler registradas en este periodo.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

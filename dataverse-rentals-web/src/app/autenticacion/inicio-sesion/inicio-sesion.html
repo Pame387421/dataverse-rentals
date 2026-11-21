@@ -1,0 +1,53 @@
+<div class="bg-light d-flex align-items-center justify-content-center min-vh-100">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-4">
+        <div class="card shadow-lg border-0 rounded-lg">
+          <div class="card-header bg-primary text-white text-center py-3">
+            <h3 class="my-1 fw-bold"><i class="bi bi-building-gear me-2"></i>Bienvenido</h3>
+            <p class="mb-0 small text-white-50">Accede a tu cuenta corporativa</p>
+          </div>
+          <div class="card-body p-4 bg-white">
+
+            @if (error()) {
+              <div class="alert alert-danger d-flex align-items-center small py-2 mb-3" role="alert">
+                <i class="bi bi-exclamation-circle-fill me-2"></i>
+                <div>{{ error() }}</div>
+              </div>
+            }
+
+            <form [formGroup]="formulario" (ngSubmit)="ingresar()">
+              <div class="form-floating mb-3">
+                <input type="email" class="form-control text-dark fw-semibold" id="email" formControlName="email"
+                       placeholder="correo@ejemplo.com" autocomplete="username" [class.is-invalid]="invalido('email')">
+                <label for="email">Correo electrónico</label>
+                <div class="invalid-feedback">Ingrese un correo electrónico válido.</div>
+              </div>
+
+              <div class="form-floating mb-4">
+                <input type="password" class="form-control text-dark font-monospace" id="password" formControlName="password"
+                       placeholder="contraseña" autocomplete="current-password" [class.is-invalid]="invalido('password')">
+                <label for="password">Contraseña</label>
+                <div class="invalid-feedback">La contraseña es obligatoria.</div>
+              </div>
+
+              <button type="submit" class="w-100 btn btn-lg btn-primary fw-bold shadow-sm py-2" style="font-size: 1rem;"
+                      [disabled]="cargando()">
+                <i class="bi bi-box-arrow-in-right me-1"></i> Acceder
+              </button>
+            </form>
+
+            <!-- TEMPORAL: borrar cuando exista el login real -->
+                        <!-- Cuentas de prueba (solo desarrollo) -->
+            <div class="alert alert-secondary small mt-4 mb-0">
+              <strong>Cuentas de prueba</strong><br>
+              Inquilino: <code>carlos.ramirez&#64;correo.pe</code> / <code>Inquilino123!</code><br>
+              Administrador: <code>admin&#64;dataverserentals.pe</code> / <code>ClaveSeguraAdmin123!</code><br>
+              <span class="text-muted">El administrador pide el código de Google Authenticator.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

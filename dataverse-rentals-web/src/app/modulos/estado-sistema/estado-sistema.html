@@ -1,0 +1,103 @@
+@if (estado(); as e) {
+  <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+    <div>
+      <h2 class="text-dark fw-bold mb-0">
+        <i class="bi bi-cpu-fill text-success me-2"></i> Estado del Sistema
+      </h2>
+      <p class="text-muted small mb-0">Diagnóstico técnico en tiempo real de la infraestructura de Dataverse Rentals</p>
+    </div>
+    <div class="text-end">
+      <span class="text-muted d-block small">Último chequeo:</span>
+      <span class="badge bg-dark px-3 py-2 font-monospace">
+        <i class="bi bi-clock-history me-1"></i> {{ e.ultimaActualizacion | date:'dd/MM/yyyy HH:mm:ss' }}
+      </span>
+      <button class="btn btn-outline-secondary btn-sm ms-2" (click)="chequear()" [disabled]="cargando()">
+        <i class="bi bi-arrow-repeat"></i> Verificar de nuevo
+      </button>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-6 mb-3">
+      <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
+        <div class="d-flex align-items-center p-4"
+             [class]="dbOk() ? 'bg-success bg-opacity-10 text-success' : 'bg-danger bg-opacity-10 text-danger'">
+          <div class="fs-1 me-3">
+            <i class="bi" [class]="dbOk() ? 'bi-database-fill-check' : 'bi-database-fill-exclamation'"></i>
+          </div>
+          <div>
+            <span class="text-uppercase small fw-bold d-block text-muted">Motor Relacional SQL Server</span>
+            <h4 class="mb-0 fw-bold">{{ dbOk() ? 'Conexión Estable' : 'Error de Enlace / Timeout' }}</h4>
+          </div>
+          <span class="ms-auto spinner-grow spinner-grow-sm" [class]="dbOk() ? 'text-success' : 'text-danger'" role="status"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
+        <div class="d-flex align-items-center p-4"
+             [class]="esOperativo() ? 'bg-primary bg-opacity-10 text-primary' : 'bg-warning bg-opacity-10 text-dark'">
+          <div class="fs-1 me-3">
+            <i class="bi" [class]="esOperativo() ? 'bi-heart-pulse-fill text-primary' : 'bi-exclamation-triangle-fill text-warning'"></i>
+          </div>
+          <div>
+            <span class="text-uppercase small fw-bold d-block text-muted">Rendimiento Perimetral Core</span>
+            <h4 class="mb-0 fw-bold">Sistema {{ e.estadoGeneral || 'Desconocido' }}</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h5 class="text-muted text-uppercase small fw-bold mb-3">Métricas de Almacenamiento en Tablas</h5>
+
+  <div class="row">
+    <div class="col-md-4 mb-3">
+      <div class="card border-0 shadow-sm rounded-3 h-100">
+        <div class="card-body p-4 text-center">
+          <div class="text-danger bg-danger bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3">
+            <i class="bi bi-file-earmark-text fs-3"></i>
+          </div>
+          <span class="text-muted d-block text-uppercase small fw-bold">Contratos Activos</span>
+          <h2 class="display-5 fw-bold text-dark mt-1">{{ e.totalContratos }}</h2>
+        </div>
+        <div class="card-footer bg-light border-0 py-2 text-center">
+          <span class="text-muted small">Mapeados en Connection JDBC</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+      <div class="card border-0 shadow-sm rounded-3 h-100">
+        <div class="card-body p-4 text-center">
+          <div class="text-success bg-success bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3">
+            <i class="bi bi-cash-coin fs-3"></i>
+          </div>
+          <span class="text-muted d-block text-uppercase small fw-bold">Abonos Registrados</span>
+          <h2 class="display-5 fw-bold text-dark mt-1">{{ e.totalPagos }}</h2>
+        </div>
+        <div class="card-footer bg-light border-0 py-2 text-center">
+          <span class="text-muted small">Vouchers físicos validados</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+      <div class="card border-0 shadow-sm rounded-3 h-100">
+        <div class="card-body p-4 text-center">
+          <div class="text-warning bg-warning bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3">
+            <i class="bi bi-chat-left-dots fs-3 text-warning"></i>
+          </div>
+          <span class="text-muted d-block text-uppercase small fw-bold">Incidencias de Soporte</span>
+          <h2 class="display-5 fw-bold text-dark mt-1">{{ e.totalSoportes }}</h2>
+        </div>
+        <div class="card-footer bg-light border-0 py-2 text-center">
+          <span class="text-muted small">Abiertos / En Proceso / Resueltos</span>
+        </div>
+      </div>
+    </div>
+  </div>
+} @else {
+  <div class="text-center p-5"><div class="spinner-border"></div></div>
+}

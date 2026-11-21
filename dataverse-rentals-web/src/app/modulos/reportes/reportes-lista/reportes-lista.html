@@ -1,0 +1,77 @@
+<div class="card shadow-lg border-0 rounded-lg mb-4">
+  <div class="card-header bg-dark text-white text-center py-3">
+    <h3 class="mb-0 fw-bold"><i class="bi bi-bar-chart-line-fill text-success me-2"></i> Panel de Reportes Operativos</h3>
+  </div>
+  <div class="card-body p-4 p-md-5 bg-white">
+    <p class="text-muted text-center mb-5 fs-5">
+      Portal analítico consolidado. Explore las métricas de rendimiento financiero, control hídrico/energético y alertas contractuales de <strong>Dataverse Rentals</strong>.
+    </p>
+
+    <div class="row g-4">
+
+      <!-- Módulo 1: Ingresos -->
+      <div class="col-md-4">
+        <div class="card text-center shadow-sm h-100 border-top border-4 border-primary border-0 rounded-lg d-flex flex-column justify-content-between bg-white">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center justify-content-center mb-2">
+              <i class="bi bi-cash-coin text-primary fs-2 me-2"></i>
+              <h5 class="card-title fw-bold text-dark mb-0">Ingresos</h5>
+            </div>
+            <p class="text-muted small mb-3">Historial analítico de recaudación y balances agregados.</p>
+            <div class="mb-2" style="position: relative; height: 180px; width: 100%;">
+              <canvas #canvasIngresos></canvas>
+            </div>
+          </div>
+          <div class="p-4 pt-0 bg-white border-0">
+            <a routerLink="/reportes/ingresos" class="btn btn-primary btn-lg w-100 shadow-sm fw-bold fs-6">
+              <i class="bi bi-eye me-1"></i> Detalles Completos
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Módulo 2: Consumos -->
+      <div class="col-md-4">
+        <div class="card text-center shadow-sm h-100 border-top border-4 border-success border-0 rounded-lg d-flex flex-column justify-content-between bg-white">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center justify-content-center mb-2">
+              <i class="bi bi-droplet-half text-success fs-2 me-2"></i>
+              <h5 class="card-title fw-bold text-dark mb-0">Consumos</h5>
+            </div>
+            <p class="text-muted small mb-3">Auditoría global de servicios públicos y arbitrios.</p>
+            <div class="mb-2" style="position: relative; height: 180px; width: 100%;">
+              <canvas #canvasConsumos></canvas>
+            </div>
+          </div>
+          <div class="p-4 pt-0 bg-white border-0">
+            <a routerLink="/reportes/consumos" class="btn btn-success btn-lg w-100 shadow-sm fw-bold fs-6">
+              <i class="bi bi-eye me-1"></i> Detalles Completos
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Módulo 3: Alertas -->
+      <div class="col-md-4">
+        <div class="card text-center shadow-sm h-100 border-top border-4 border-warning border-0 rounded-lg d-flex flex-column justify-content-between bg-white">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center justify-content-center mb-2">
+              <i class="bi bi-file-earmark-exclamation text-warning fs-2 me-2"></i>
+              <h5 class="card-title fw-bold text-dark mb-0">Alertas</h5>
+            </div>
+            <p class="text-muted small mb-3">Monitoreo de caducidad y plazos menores a 30 días.</p>
+            <div class="mb-2" style="position: relative; height: 180px; width: 100%;">
+              <canvas #canvasContratos></canvas>
+            </div>
+          </div>
+          <div class="p-4 pt-0 bg-white border-0">
+            <a routerLink="/reportes/alertas" class="btn btn-warning text-dark btn-lg w-100 shadow-sm fw-bold fs-6">
+              <i class="bi bi-eye me-1"></i> Ver Alertas
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

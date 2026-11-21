@@ -1,0 +1,67 @@
+<div class="row justify-content-center">
+  <div class="col-md-6 text-center">
+    <div class="card shadow-lg border-0 rounded-lg p-4">
+      <h3 class="text-primary fw-bold mb-2"><i class="bi bi-shield-lock-fill"></i> Configurar MFA</h3>
+
+      @if (cargando()) {
+        <div class="p-4"><div class="spinner-border"></div></div>
+
+      } @else if (yaActivo()) {
+        <div class="alert alert-success small mt-3">
+          <i class="bi bi-check-circle-fill me-1"></i> La verificación en dos pasos está activada en tu cuenta.
+        </div>
+        <a class="btn btn-secondary fw-bold" [routerLink]="auth.rutaInicio()">
+          <i class="bi bi-arrow-left-circle me-1"></i> Volver
+        </a>
+
+      } @else if (clave()) {
+        <p class="text-muted small">Escanea este código QR con Google Authenticator en tu teléfono móvil para vincular tu cuenta.</p>
+
+        <div class="my-4">
+          @if (qr()) {
+            <img [src]="qr()" alt="Código QR" class="img-fluid border p-2 bg-white rounded shadow-sm" style="max-width: 240px;">
+          } @else {
+            <div class="border d-flex align-items-center justify-content-center mx-auto bg-white rounded shadow-sm" style="width: 240px; height: 240px;">
+              <i class="bi bi-qr-code text-muted display-1"></i>
+            </div>
+          }
+        </div>
+
+        <div class="alert alert-info text-start small border rounded-3 mb-4 shadow-sm">
+          <strong>¿No puedes escanear el código QR?</strong><br>
+          Introduce esta clave de seguridad manualmente en tu aplicación móvil:<br>
+          <code class="fw-bold text-dark font-monospace fs-6">{{ clave() }}</code>
+        </div>
+
+        @if (error()) {
+          <div class="alert alert-danger small py-2 text-center mb-3">
+            <i class="bi bi-exclamation-triangle-fill me-1"></i> {{ error() }}
+          </div>
+        }
+
+        <form [formGroup]="formulario" (ngSubmit)="activar()">
+          <div class="form-floating mb-3 text-start">
+            <input type="text" class="form-control font-monospace text-center fw-bold text-dark" id="codigo"
+                   style="letter-spacing: 0.15em; font-size: 1.1rem;" formControlName="codigo" placeholder="000000"
+                   maxlength="6" inputmode="numeric" autocomplete="one-time-code"
+                   [class.is-invalid]="formulario.controls.codigo.touched && formulario.controls.codigo.invalid">
+            <label for="codigo">Código de Verificación de 6 dígitos</label>
+            <div class="invalid-feedback">El código debe tener 6 dígitos.</div>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100 btn-lg fw-bold shadow-sm py-2 fs-6" [disabled]="activando()">
+            <i class="bi bi-check-circle-fill me-1"></i> Validar y Activar MFA
+          </button>
+
+          <div class="text-center mt-3">
+            <a [routerLink]="auth.rutaInicio()" class="text-muted small text-decoration-none">Cancelar y Volver</a>
+          </div>
+        </form>
+
+      } @else {
+        <div class="alert alert-danger small mt-3">{{ error() }}</div>
+        <a class="btn btn-secondary fw-bold" [routerLink]="auth.rutaInicio()">Volver</a>
+      }
+    </div>
+  </div>
+</div>

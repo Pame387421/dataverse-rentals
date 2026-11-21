@@ -1,0 +1,51 @@
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card shadow border-0 rounded-lg">
+      <div class="card-header bg-warning text-dark p-4">
+        <h3 class="mb-1 text-center fw-bold">Actualizar mi Información</h3>
+        <p class="mb-0 text-center text-muted small">Modifica únicamente tus datos permitidos de contacto</p>
+      </div>
+      <div class="card-body p-4">
+        <form [formGroup]="formulario" (ngSubmit)="guardar()">
+          <div class="row">
+            <div class="col-md-12 mb-3">
+              <label class="form-label fw-bold small text-secondary">Nombre Completo</label>
+              <input class="form-control" formControlName="nombre" maxlength="100" [class.is-invalid]="invalido('nombre')">
+              <div class="invalid-feedback">El nombre es obligatorio.</div>
+            </div>
+
+            <div class="col-md-12 mb-3">
+              <label class="form-label fw-bold small text-secondary">Correo Electrónico (No modificable)</label>
+              <input type="email" class="form-control bg-light text-muted" [value]="correo()" readonly disabled>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold small text-secondary">Tipo de Documento</label>
+              <select class="form-select" formControlName="tipoDocumento">
+                @for (t of tiposDocumento; track t.valor) {
+                  <option [value]="t.valor">{{ t.texto }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold small text-secondary">Número de Documento</label>
+              <input class="form-control font-monospace" formControlName="numeroDocumento" maxlength="20"
+                     [class.is-invalid]="invalido('numeroDocumento')">
+              <div class="invalid-feedback">El número de documento es obligatorio.</div>
+            </div>
+          </div>
+
+          <div class="alert alert-info small mt-2 py-2 shadow-sm mb-0">
+            <i class="bi bi-info-circle-fill me-1 fw-bold"></i> Los cambios de contrato y asignación de roles solo pueden ser modificados por el equipo de administración de DataverseRentals.
+          </div>
+
+          <div class="d-flex justify-content-between mt-4 border-top pt-3">
+            <a class="btn btn-secondary px-4 fw-bold small shadow-sm" routerLink="/mi-perfil">Cancelar y Volver</a>
+            <button type="submit" class="btn btn-success px-4 fw-bold small shadow-sm" [disabled]="guardando()">Guardar Cambios</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

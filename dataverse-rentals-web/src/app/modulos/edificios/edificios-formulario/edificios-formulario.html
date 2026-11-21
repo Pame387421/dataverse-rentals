@@ -1,0 +1,41 @@
+<div class="card shadow-lg border-0 rounded-lg" style="max-width: 700px">
+  <div class="card-header bg-success text-white text-center py-3">
+    <h3 class="mb-0 fw-bold">
+      <i class="bi bi-plus-circle-fill me-2"></i>{{ esEdicion ? 'Editar Edificio' : 'Registrar Edificio' }}
+    </h3>
+  </div>
+  <div class="card-body p-4">
+    <form [formGroup]="formulario" (ngSubmit)="guardar()">
+
+      <div class="form-floating mb-3">
+        <input class="form-control" id="nombre" formControlName="nombre" placeholder="Nombre del Edificio"
+               [class.is-invalid]="formulario.controls.nombre.touched && formulario.controls.nombre.invalid">
+        <label for="nombre">Nombre del Edificio</label>
+        <div class="invalid-feedback">El nombre es obligatorio (máx. 100 caracteres).</div>
+      </div>
+
+      <div class="form-floating mb-3">
+        <input class="form-control" id="direccion" formControlName="direccion" placeholder="Dirección"
+               [class.is-invalid]="formulario.controls.direccion.touched && formulario.controls.direccion.invalid">
+        <label for="direccion">Dirección Física</label>
+        <div class="invalid-feedback">La dirección es obligatoria (máx. 200 caracteres).</div>
+      </div>
+
+      <div class="form-floating mb-3">
+        <input type="number" class="form-control" id="pisos" formControlName="pisos" placeholder="Cantidad de Pisos"
+               [class.is-invalid]="formulario.controls.pisos.touched && formulario.controls.pisos.invalid">
+        <label for="pisos">Cantidad de Pisos</label>
+        <div class="invalid-feedback">Ingrese un número de pisos entre 1 y 100.</div>
+      </div>
+
+      <div class="d-flex justify-content-between mt-4">
+        <a class="btn btn-secondary fw-bold px-4 shadow-sm" routerLink="/edificios">
+          <i class="bi bi-arrow-left-circle me-1"></i> Volver
+        </a>
+        <button type="submit" class="btn btn-success fw-bold px-4 shadow-sm" [disabled]="guardando()">
+          <i class="bi bi-save me-1"></i> Guardar Edificio
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
